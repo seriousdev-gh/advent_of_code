@@ -17,20 +17,19 @@ end
 # p machines
 
 def solve_from_state(states, buttons)
-  puts "Level: #{states.size}"
-  next_states = []
+  next_states = {}
 
-  states.each do |(state, solution)|
+  states.each do |state, solution|
     current_on_ids = state.chars.each_with_index.filter_map { |c, i| i if c == '#' }
     candidates     = buttons.select { it.intersect?(current_on_ids) }
 
     candidates.each do |button|
       next_indicator = state.dup
       button.each { |i| next_indicator[i] = state[i] == '#' ? '.' : '#' }
-      next_state = [next_indicator, solution + [button]]
+      next if next_states.key?(next_indicator)
       return solution + [button] if next_indicator.count('#').zero?
 
-      next_states << next_state
+      next_states[next_indicator] = solution + [button]
     end
   end
 
